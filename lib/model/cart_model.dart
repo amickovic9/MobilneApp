@@ -1,54 +1,55 @@
 import 'package:flutter/material.dart';
 
 class CartModel extends ChangeNotifier {
-  // list of items on sale
-  final List _shopItems = const [
-    ["Avocado", "4.00", "lib/images/avocado.png", Colors.green],
-    ["Banana", "2.50", "lib/images/banana.png", Colors.yellow],
-    ["Chicken", "12.80", "lib/images/chicken.png", Colors.brown],
-    ["Water", "1.00", "lib/images/water.png", Colors.blue],
-    ["Strawberries", "5.00", "lib/images/strawberries.png", Colors.red],
-    ["Broccoli", "3.50", "lib/images/broccoli.png", Colors.green],
-    ["Carrot", "1.20", "lib/images/carrot.png", Colors.orange],
-    ["Eggplant", "2.80", "lib/images/eggplant.png", Colors.purple],
-    ["Tomato", "1.50", "lib/images/tomato.png", Colors.red],
-    ["Lettuce", "2.00", "lib/images/lettuce.png", Colors.green],
-    ["Milk", "3.00", "lib/images/milk.png", Colors.white],
-    ["Bread", "2.50", "lib/images/bread.png", Colors.brown],
-    ["Cheese", "4.50", "lib/images/cheese.png", Colors.yellow],
-    ["Apple", "2.00", "lib/images/apple.png", Colors.red],
-    ["Grapes", "4.50", "lib/images/grapes.png", Colors.purple],
-    ["Orange", "1.80", "lib/images/orange.png", Colors.orange],
-    ["Potato", "2.20", "lib/images/potato.png", Colors.brown],
-    ["Onion", "1.00", "lib/images/onion.png", Colors.white],
-    ["Cucumber", "1.50", "lib/images/cucumber.png", Colors.green],
+  List<List<String>> _shopItems = [
+    ['Jabuka', '150'],
+    ['Banana', '80'],
+    ['Paradajz', '200'],
+    ['Krastavac', '120'],
+    ['Pomorandže', '120'],
+    ['Krompir', '60'],
+    ['Luk', '40'],
+    ['Jagode', '250'],
+    ['Šargarepa', '100'],
+    ['Kivi', '180'],
+    ['Ananas', '300'],
+    ['Brokoli', '150'],
+    ['Trešnje', '200'],
+    ['Tikvica', '90'],
+    ['Limun', '100'],
+    ['Maline', '300'],
+    ['Kelj', '80'],
+    ['Breskve', '180'],
+    ['Artičoka', '250'],
+    ['Zelena salata', '120'],
   ];
 
-  // list of cart items
-  List _cartItems = [];
+  List<List<String>> get shopItems => _shopItems;
 
-  get cartItems => _cartItems;
+  List<List<String>> _cartItems = [];
 
-  get shopItems => _shopItems;
+  List<List<String>> get cartItems => _cartItems;
 
-  // add item to cart
-  void addItemToCart(int index) {
-    _cartItems.add(_shopItems[index]);
+  void addItemToCart(String name, double price) {
+    _cartItems.add([name, price.toString()]);
     notifyListeners();
   }
 
-  // remove item from cart
   void removeItemFromCart(int index) {
     _cartItems.removeAt(index);
     notifyListeners();
   }
 
-  // calculate total price
-  String calculateTotal() {
-    double totalPrice = 0;
-    for (int i = 0; i < cartItems.length; i++) {
-      totalPrice += double.parse(cartItems[i][1]);
+  double calculateTotal() {
+    double total = 0.0;
+    for (var item in _cartItems) {
+      total += double.parse(item[1]);
     }
-    return totalPrice.toStringAsFixed(2);
+    return total;
+  }
+
+  void clearCart() {
+    _cartItems.clear();
+    notifyListeners();
   }
 }

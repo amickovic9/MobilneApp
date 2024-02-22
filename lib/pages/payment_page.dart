@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../model/cart_model.dart';
 
 class PaymentPage extends StatefulWidget {
   final String totalAmountText;
@@ -15,9 +17,11 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
+    CartModel cart = Provider.of<CartModel>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Payment'),
+        title: Text('Naplata'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -26,34 +30,45 @@ class _PaymentPageState extends State<PaymentPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Total Amount: ${widget.totalAmountText}',
+              'Ukupna cena: ${widget.totalAmountText}',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-
             const SizedBox(height: 20),
-
             TextField(
               controller: amountPaidController,
-              decoration: InputDecoration(labelText: 'Enter Amount Paid'),
+              decoration: InputDecoration(
+                labelText: 'Unesite količinu novca koju vam je mušterija dala',
+              ),
               keyboardType: TextInputType.numberWithOptions(decimal: true),
             ),
-
             const SizedBox(height: 20),
-
             ElevatedButton(
               onPressed: () {
-                // Preračunaj kusur kada se pritisne dugme
                 calculateChange();
+
+                // Isprazni korpu
+                cart.clearCart();
+
+                // Vrati se na početnu stranicu
+                Navigator.pop(context);
               },
-              child: Text('Calculate Change'),
+              child: Text('Naplati'),
             ),
-
             const SizedBox(height: 20),
-
-            // Prikazi izračunat kusur
             Text(
-              'Change: \$${changeAmount.toStringAsFixed(2)}',
+              'Kusur: ${changeAmount.toStringAsFixed(2)} rsd',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Isprazni korpu
+                cart.clearCart();
+
+                // Vrati se na početnu stranicu
+                Navigator.pop(context);
+              },
+              child: Text('Završi'),
             ),
           ],
         ),
@@ -61,40 +76,61 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  // Funkcija za preračunavanje kusura
   void calculateChange() {
-    double amountPaid = double.tryParse(amountPaidController.text) ?? 0.0;
+    try {
+      double amountPaid =
+          double.parse(amountPaidController.text.replaceAll(',', '.'));
 
-    // Proveri da li je iznos plaćanja manji od ukupne cene
-    if (amountPaid < double.parse(widget.totalAmountText.substring(1))) {
-      // Prikaži upozorenje sa iznosom duga
-      showPaymentErrorAlert(amountPaid);
-    } else {
-      // Preračunaj kusur
-      setState(() {
-        changeAmount =
-            amountPaid - double.parse(widget.totalAmountText.substring(1));
-      });
+      if (amountPaid < double.parse(widget.totalAmountText)) {
+        showPaymentErrorAlert(amountPaid);
+      } else {
+        setState(() {
+          changeAmount = amountPaid - double.parse(widget.totalAmountText);
+        });
+      }
+    } catch (e) {
+      print("Greška prilikom konverzije: $e");
+      showInvalidInputAlert();
     }
   }
 
-  // Funkcija za prikazivanje upozorenja
+  void showInvalidInputAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Nevažeći unos'),
+          content: Text('Unesite ispravan numerički iznos.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void showPaymentErrorAlert(double amountPaid) {
-    double remainingAmount =
-        double.parse(widget.totalAmountText.substring(1)) - amountPaid;
+    double remainingAmount = double.parse(widget.totalAmountText) - amountPaid;
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Payment Error'),
+          title: Text('Greška pri plaćanju'),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Customer needs to pay more!'),
+              Text('Kupac treba da plati više!'),
               const SizedBox(height: 8),
-              Text('Remaining Amount: \$${remainingAmount.toStringAsFixed(2)}'),
+              Text(
+                'Preostali iznos: ${remainingAmount.toStringAsFixed(2)} rsd',
+              ),
             ],
           ),
           actions: [

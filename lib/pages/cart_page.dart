@@ -20,24 +20,22 @@ class CartPage extends StatelessWidget {
       ),
       body: Consumer<CartModel>(
         builder: (context, value, child) {
-          String totalAmountText = '\$${value.calculateTotal()}';
+          String totalAmountText = '${value.calculateTotal()} rsd';
+          String total = '${value.calculateTotal()}';
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Let's order fresh items for you
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24.0),
                 child: Text(
-                  "My Cart",
+                  "Korpa",
                   style: GoogleFonts.notoSerif(
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-
-              // list view of cart
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
@@ -57,7 +55,7 @@ class CartPage extends StatelessWidget {
                               style: const TextStyle(fontSize: 18),
                             ),
                             subtitle: Text(
-                              '\$' + value.cartItems[index][1],
+                              value.cartItems[index][1] + ' rsd',
                               style: const TextStyle(fontSize: 12),
                             ),
                             trailing: IconButton(
@@ -73,8 +71,6 @@ class CartPage extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // total amount + pay now
               Padding(
                 padding: const EdgeInsets.all(36.0),
                 child: Container(
@@ -90,11 +86,10 @@ class CartPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Total Price',
+                            'Ukupno',
                             style: TextStyle(color: Colors.green[200]),
                           ),
                           const SizedBox(height: 8),
-                          // total price
                           Text(
                             totalAmountText,
                             style: const TextStyle(
@@ -105,8 +100,6 @@ class CartPage extends StatelessWidget {
                           ),
                         ],
                       ),
-
-                      // pay now button
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.green.shade200),
@@ -117,18 +110,17 @@ class CartPage extends StatelessWidget {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                // Navigiraj ka stranici za plaćanje i prosledi tekstualnu reprezentaciju cene
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => PaymentPage(
-                                      totalAmountText: totalAmountText,
+                                      totalAmountText: total,
                                     ),
                                   ),
                                 );
                               },
                               child: Text(
-                                'Pay Now',
+                                'Naplata',
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),

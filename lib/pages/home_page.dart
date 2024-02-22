@@ -12,81 +12,39 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.grey[200],
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 24.0),
-          child: Icon(
-            Icons.location_on,
-            color: Colors.grey[700],
-          ),
-        ),
-        title: Text(
-          'Sydney, Australia',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey[700],
-          ),
-        ),
-        centerTitle: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 24.0),
-            child: Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                Icons.person,
-                color: Colors.grey,
-              ),
+        title: Center(
+          child: Text(
+            'Dobro došli',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[700],
             ),
           ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.black,
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return CartPage();
-            },
-          ),
         ),
-        child: const Icon(Icons.shopping_bag),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 48),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
-            child: Text('Good morning,'),
-          ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Text(
-              "Let's order fresh items for you",
-              style: GoogleFonts.notoSerif(
-                fontSize: 36,
+              "Samo domaći proizvodi!",
+              style: TextStyle(
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
           ),
-          const SizedBox(height: 24),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
-            child: Divider(),
-          ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Text(
-              "Fresh Items",
+              "Proizvodi",
               style: GoogleFonts.notoSerif(
                 fontSize: 18,
               ),
@@ -101,16 +59,15 @@ class HomePage extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
-                        // GroceryItemTile widget
                         GroceryItemTile(
                           itemName: value.shopItems[index][0],
                           itemPrice: value.shopItems[index][1],
-                          color: value.shopItems[index][3],
-                          onPressed: () =>
-                              Provider.of<CartModel>(context, listen: false)
-                                  .addItemToCart(index),
+                          onPressed: (name, price) {
+                            Provider.of<CartModel>(context, listen: false)
+                                .addItemToCart(name, price);
+                          },
                         ),
-                        const SizedBox(height: 16), // Add spacing between items
+                        const SizedBox(height: 16),
                       ],
                     );
                   },
@@ -119,6 +76,18 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black,
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return CartPage();
+            },
+          ),
+        ),
+        child: const Icon(Icons.shopping_cart),
       ),
     );
   }
