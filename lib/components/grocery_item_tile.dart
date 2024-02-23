@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class GroceryItemTile extends StatefulWidget {
   final String itemName;
@@ -64,19 +62,23 @@ class _GroceryItemTileState extends State<GroceryItemTile> {
                   ),
                   SizedBox(width: 8),
                   Container(
-                    width: 50,
+                    width: 60,
                     child: TextFormField(
                       controller: weightController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.blue, width: 2.0),
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-              MaterialButton(
+              ElevatedButton(
                 onPressed: () {
                   if (widget.onPressed != null) {
                     double enteredWeight =
@@ -86,6 +88,14 @@ class _GroceryItemTileState extends State<GroceryItemTile> {
                     widget.onPressed!(widget.itemName, totalPrice);
                   }
                 },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
                 child: Text(
                   'Dodaj u korpu',
                   style: TextStyle(
@@ -93,7 +103,6 @@ class _GroceryItemTileState extends State<GroceryItemTile> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                color: Colors.red,
               ),
             ],
           ),

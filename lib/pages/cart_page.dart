@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'payment_page.dart'; // Uključi import za PaymentPage
+import 'payment_page.dart';
 
 import '../model/cart_model.dart';
 
@@ -12,7 +12,7 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.blue,
         elevation: 0,
         iconTheme: IconThemeData(
           color: Colors.grey[800],
@@ -76,7 +76,7 @@ class CartPage extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: Colors.green,
+                    color: Colors.blue,
                   ),
                   padding: const EdgeInsets.all(24),
                   child: Row(

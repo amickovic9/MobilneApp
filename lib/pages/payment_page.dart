@@ -22,6 +22,7 @@ class _PaymentPageState extends State<PaymentPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Naplata'),
+        backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -30,29 +31,40 @@ class _PaymentPageState extends State<PaymentPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Ukupna cena: ${widget.totalAmountText}',
+              'Ukupan iznos: ${widget.totalAmountText} rsd',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             TextField(
               controller: amountPaidController,
               decoration: InputDecoration(
-                labelText: 'Unesite količinu novca koju vam je mušterija dala',
+                labelText: 'Unesite iznos koji je mušterija platila',
               ),
               keyboardType: TextInputType.numberWithOptions(decimal: true),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                calculateChange();
-
-                // Isprazni korpu
-                cart.clearCart();
-
-                // Vrati se na početnu stranicu
-                Navigator.pop(context);
+                try {
+                  calculateChange();
+                } catch (e) {
+                  print("Greška prilikom konverzije: $e");
+                  showInvalidInputAlert();
+                }
               },
-              child: Text('Naplati'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                'Plati',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             const SizedBox(height: 20),
             Text(
@@ -62,13 +74,22 @@ class _PaymentPageState extends State<PaymentPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Isprazni korpu
                 cart.clearCart();
-
-                // Vrati se na početnu stranicu
                 Navigator.pop(context);
               },
-              child: Text('Završi'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                'Završi',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),
@@ -77,20 +98,15 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   void calculateChange() {
-    try {
-      double amountPaid =
-          double.parse(amountPaidController.text.replaceAll(',', '.'));
+    double amountPaid =
+        double.parse(amountPaidController.text.replaceAll(',', '.'));
 
-      if (amountPaid < double.parse(widget.totalAmountText)) {
-        showPaymentErrorAlert(amountPaid);
-      } else {
-        setState(() {
-          changeAmount = amountPaid - double.parse(widget.totalAmountText);
-        });
-      }
-    } catch (e) {
-      print("Greška prilikom konverzije: $e");
-      showInvalidInputAlert();
+    if (amountPaid < double.parse(widget.totalAmountText)) {
+      showPaymentErrorAlert(amountPaid);
+    } else {
+      setState(() {
+        changeAmount = amountPaid - double.parse(widget.totalAmountText);
+      });
     }
   }
 
@@ -100,7 +116,7 @@ class _PaymentPageState extends State<PaymentPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Nevažeći unos'),
-          content: Text('Unesite ispravan numerički iznos.'),
+          content: Text('Unesite broj'),
           actions: [
             TextButton(
               onPressed: () {
